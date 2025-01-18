@@ -1,6 +1,6 @@
 from info import *
 from web.bot import Webxav
-from web.utils.human_readable import humanbytes
+from utils import get_size
 from web.utils.file_properties import get_file_ids
 from web.server.exceptions import InvalidHash
 import urllib.parse
@@ -18,19 +18,19 @@ async def render_page(id, secure_hash, src=None):
         raise InvalidHash
 
     src = urllib.parse.urljoin(
-        Var.URL,
-        f"{id}/{urllib.parse.quote_plus(file_data.file_name)}?hash={secure_hash}",
+        URL,
+        f"{id}/{urllib.parse.quote_plus}?hash={secure_hash}",
     )
 
     tag = file_data.mime_type.split("/")[0].strip()
-    file_size = humanbytes(file_data.file_size)
+    file_size = get_size(file_data.file_size)
     if tag in ["video", "audio"]:
         template_file = "web/template/req.html"
     else:
         template_file = "web/template/dl.html"
         async with aiohttp.ClientSession() as s:
             async with s.get(src) as u:
-                file_size = humanbytes(int(u.headers.get("Content-Length")))
+                file_size = get_size(u.headers.get('Content-Length'))
 
     with open(template_file) as f:
         template = jinja2.Template(f.read())
