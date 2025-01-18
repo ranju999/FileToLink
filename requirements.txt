@@ -3,6 +3,7 @@ tgcrypto
 aiohttp
 python-dotenv<=0.20.0
 motor
+pyromod
 aiofiles
 dnspython
 apscheduler
