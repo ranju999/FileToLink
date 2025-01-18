@@ -9,7 +9,7 @@ from aiohttp.http_exceptions import BadStatusLine
 from web.bot import multi_clients, work_loads, Webxav
 from web.server.exceptions import FIleNotFound, InvalidHash
 from web import WebTime, __version__
-from web.utils.time_format import get_readable_time
+from utils import get_readable_time
 from web.utils.custom_dl import ByteStreamer
 from web.utils.render_template import render_page
 from info import *
