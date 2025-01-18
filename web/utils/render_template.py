@@ -19,7 +19,7 @@ async def render_page(id, secure_hash, src=None):
 
     src = urllib.parse.urljoin(
         URL,
-        f"{id}/{urllib.parse.quote_plus}?hash={secure_hash}",
+        f"{id}?hash={secure_hash}",
     )
 
     tag = file_data.mime_type.split("/")[0].strip()
