@@ -22,7 +22,7 @@ async def root_route_handler(_):
         {
             "server_status": "running",
             "uptime": get_readable_time(time.time() - WebTime),
-            "telegram_bot": "@" + WebBot.username,
+            "telegram_bot": "@" + Webxav.username,
             "connected_bots": len(multi_clients),
             "loads": dict(
                 ("bot" + str(c + 1), l)
