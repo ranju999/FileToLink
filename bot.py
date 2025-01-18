@@ -1,82 +1,45 @@
-# Don't Remove Credit @VJ_Botz
-# Subscribe YouTube Channel For Amazing Bot @Tech_VJ
-# Ask Doubt on telegram @KingVJ01
-
-# Clone Code Credit : YT - @Tech_VJ / TG - @VJ_Bots / GitHub - @VJBots
-
-import sys, glob, importlib, logging, logging.config, pytz, asyncio
-from pathlib import Path
-
-# Get logging configurations
-logging.config.fileConfig('logging.conf')
-logging.getLogger().setLevel(logging.INFO)
-logging.getLogger("pyrogram").setLevel(logging.ERROR)
-logging.getLogger("imdbpy").setLevel(logging.ERROR)
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
-logging.getLogger("aiohttp").setLevel(logging.ERROR)
-logging.getLogger("aiohttp.web").setLevel(logging.ERROR)
-
-from pyrogram import Client, idle 
-from database.users_chats_db import db
-from info import *
-from utils import temp
-from typing import Union, Optional, AsyncGenerator
-from Script import script 
-from datetime import date, datetime 
+from web import WebTime, __version__
+from info import API_ID, API_HASH, BOT_TOKEN, PORT, ADMINS
 from aiohttp import web
-from plugins import web_server
+from web.server import web_server
+from pyrogram import Client, idle
+import pyromod.listen
+import os
+from typing import Union, Optional, AsyncGenerator
+from pyrogram import types
 
-from TechVJ.bot import TechVJBot
-from TechVJ.util.keepalive import ping_server
-from TechVJ.bot.clients import initialize_clients
+class Bot(Client):
+    def __init__(self):
+        super().__init__(
+            name="postforwarder",
+            api_id=API_ID,
+            api_hash=API_HASH,
+            bot_token=BOT_TOKEN,
+            workers=200,
+            plugins={"root": "plugins"},
+            sleep_threshold=15,
+            max_concurrent_transmissions=100,
+        )
 
-ppath = "plugins/*.py"
-files = glob.glob(ppath)
-TechVJBot.start()
-loop = asyncio.get_event_loop()
+    async def start(self):
+        await super().start()
+        me = await self.get_me()
+        self.mention = me.mention
+        self.username = me.username 
+        app = await web_server()
+        app['bot'] = self  # Pass bot instance to the app
+        runner = web.AppRunner(app)
+        await runner.setup()
+        bind_address = "0.0.0.0"       
+        await web.TCPSite(runner, bind_address, PORT).start()     
+        print(f"| ❤ |==> Iꜱ Sᴛᴀʀᴛᴇᴅ ɪɴɪᴛɪᴀᴛᴇᴅ {me.first_name} <==| 🍿 |")
+        await idle()
+        await self.send_message(ADMINS, f"**__{me.first_name}  Iꜱ Sᴛᴀʀᴛᴇᴅ.....✨️😅😅😅__**")
+        
+    async def stop(self, *args):
+        await super().stop()
+        print("Bot stopped. Bye.")
+       
 
-
-async def start():
-    print('\n')
-    print('Initalizing Your Bot')
-    bot_info = await TechVJBot.get_me()
-    await initialize_clients()
-    for name in files:
-        with open(name) as a:
-            patt = Path(a.name)
-            plugin_name = patt.stem.replace(".py", "")
-            plugins_dir = Path(f"plugins/{plugin_name}.py")
-            import_path = "plugins.{}".format(plugin_name)
-            spec = importlib.util.spec_from_file_location(import_path, plugins_dir)
-            load = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(load)
-            sys.modules["plugins." + plugin_name] = load
-            print("Tech VJ Imported => " + plugin_name)
-    if ON_HEROKU:
-        asyncio.create_task(ping_server())
-    me = await TechVJBot.get_me()
-    temp.BOT = TechVJBot
-    temp.ME = me.id
-    temp.U_NAME = me.username
-    temp.B_NAME = me.first_name
-    tz = pytz.timezone('Asia/Kolkata')
-    today = date.today()
-    now = datetime.now(tz)
-    time = now.strftime("%H:%M:%S %p")
-    await TechVJBot.send_message(chat_id=LOG_CHANNEL, text=script.RESTART_TXT.format(today, time))
-    app = web.AppRunner(await web_server())
-    await app.setup()
-    bind_address = "0.0.0.0"
-    await web.TCPSite(app, bind_address, PORT).start()
-    await idle()
-
-
-if __name__ == '__main__':
-    try:
-        loop.run_until_complete(start())
-    except KeyboardInterrupt:
-        logging.info('Service Stopped Bye 👋')
-
+bot=Bot()
+bot.run()
