@@ -1,5 +1,5 @@
 import re
-from os import environ
+from os import environ, getenv
 
 id_pattern = re.compile(r'^.\d+$')
 
@@ -13,6 +13,8 @@ PORT = environ.get("PORT", "8080")
 
 # Online Stream and Download
 MULTI_CLIENT = False
+WORKERS = int(getenv('WORKERS', '4'))
+name = str(getenv('name', 'linkstreamrobot'))
 SLEEP_THRESHOLD = int(environ.get('SLEEP_THRESHOLD', '60'))
 PING_INTERVAL = int(environ.get("PING_INTERVAL", "1200"))  # 20 minutes
 if 'DYNO' in environ:
