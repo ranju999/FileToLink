@@ -1,6 +1,6 @@
 import os, asyncio, requests, string, random
 from asyncio import TimeoutError
-from biisal.bot import StreamBot
+from web.bot import Webxav
 from utils import humanbytes
 from info import *
 from urllib.parse import quote_plus
