@@ -6,7 +6,7 @@ import secrets
 import mimetypes
 from aiohttp import web
 from aiohttp.http_exceptions import BadStatusLine
-from web.bot import multi_clients, work_loads, StreamBot
+from web.bot import multi_clients, work_loads, Webxav
 from web.server.exceptions import FIleNotFound, InvalidHash
 from web import WebTime, __version__
 from web.utils.time_format import get_readable_time
@@ -22,7 +22,7 @@ async def root_route_handler(_):
         {
             "server_status": "running",
             "uptime": get_readable_time(time.time() - WebTime),
-            "telegram_bot": "@" + webBot.username,
+            "telegram_bot": "@" + WebBot.username,
             "connected_bots": len(multi_clients),
             "loads": dict(
                 ("bot" + str(c + 1), l)
@@ -87,7 +87,7 @@ async def media_streamer(request: web.Request, id: int, secure_hash: str):
     index = min(work_loads, key=work_loads.get)
     faster_client = multi_clients[index]
     
-    if Var.MULTI_CLIENT:
+    if MULTI_CLIENT:
         logging.info(f"Client {index} is now serving {request.remote}")
 
     if faster_client in class_cache:
