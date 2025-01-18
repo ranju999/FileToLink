@@ -3,11 +3,11 @@ import logging
 from info import *
 from pyrogram import Client
 from web.util.config_parser import TokenParser
-from web.bot import multi_clients, work_loads, TechVJBot
+from web.bot import multi_clients, work_loads, webxav
 
 
 async def initialize_clients():
-    multi_clients[0] = TechVJBot
+    multi_clients[0] = webxav
     work_loads[0] = 0
     all_tokens = TokenParser().parse_from_env()
     if not all_tokens:
