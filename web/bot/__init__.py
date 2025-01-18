@@ -2,7 +2,7 @@ from pyrogram import Client
 from info import *
 from os import getcwd
 
-webxav= Client(
+Webxav= Client(
     name='Web Streamer',
     api_id=API_ID,
     api_hash=API_HASH,
