@@ -2,7 +2,7 @@ from web import WebTime, __version__
 from web.server import web_server
 from pyrogram import Client
 from info import API_ID, API_HASH, BOT_TOKEN, PORT
-from utils import tempa
+from utils import temp
 from aiohttp import web
 
 class Bot(Client):
